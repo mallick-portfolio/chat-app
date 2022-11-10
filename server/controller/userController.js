@@ -67,7 +67,6 @@ exports.loginController = async (req, res, next) => {
   try {
     const result = await userServices.loginServices(req.body);
     const token = generateToken(result._id);
-    console.log(result);
     if (result) {
       res.status(200).json({
         success: true,
