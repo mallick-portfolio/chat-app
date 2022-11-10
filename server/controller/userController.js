@@ -1,5 +1,5 @@
 const User = require("../models/UserModel");
-const byCryptPassword = require("../utils/bycryptPassword");
+const userServices = require("../services/userServices");
 const generateToken = require("../utils/generateToken");
 
 exports.getAllUser = async (req, res, next) => {
@@ -44,25 +44,13 @@ exports.deleteUserById = async (req, res, next) => {
 
 exports.signUpController = async (req, res, next) => {
   try {
-    const existUser = await User.findOne({
-      email: req.body.email,
-      name: req.body.name,
-    });
+    const existUser = await userServices.checkUserById(req.body.email);
     if (!existUser) {
-      const password = await byCryptPassword(req.body.password);
-      console.log(password);
-      const newUser = {
-        name: req.body.name,
-        email: req.body.email,
-        password,
-      };
-      const result = await User.create(newUser);
-      const token = generateToken(result._id);
+      const result = await userServices.signupServices(req.body);
       res.status(201).json({
         message: "User signup successfull",
         success: true,
         data: result,
-        token,
       });
     } else {
       res.status(401).json({
@@ -75,4 +63,24 @@ exports.signUpController = async (req, res, next) => {
   }
 };
 
-
+exports.loginController = async (req, res, next) => {
+  try {
+    const result = await userServices.loginServices(req.body);
+    const token = generateToken(result._id);
+    console.log(result);
+    if (result) {
+      res.status(200).json({
+        success: true,
+        message: "Login successfull",
+        token,
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        message: "Login Failed",
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
