@@ -4,12 +4,13 @@ const userSchema = mongoose.Schema(
     name: {
       type: String,
       trim: true,
-      require: true,
+      require: [true, "Name must me required"],
     },
     email: {
       type: String,
       trim: true,
       require: true,
+      unique: [true, "Please provide you vaild email"],
     },
     password: {
       type: String,
@@ -17,7 +18,6 @@ const userSchema = mongoose.Schema(
     },
     pic: {
       type: String,
-      require: true,
       default: "https://placeimg.com/192/192/people",
     },
   },
