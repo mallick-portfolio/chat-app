@@ -83,3 +83,10 @@ exports.loginController = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.imageUplaod = async (req, res, next) => {
+  res.status(200).json({
+    success: true,
+    data: req.file,
+  });
+};
